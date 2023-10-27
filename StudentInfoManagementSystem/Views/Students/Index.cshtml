@@ -1,0 +1,81 @@
+﻿@model PagedList.IPagedList<StudentInfoManagementSystem.Models.Student>
+    @using PagedList.Mvc
+
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+    @{
+        ViewBag.Title = "Student List";
+    }
+
+    <div class="container mt-5">
+        <h2 class="mb-4">List Of Students</h2>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                @Html.ActionLink("Add New Student", "Create", null, new { @class = "btn btn-primary" })
+            </div>
+            <div class="col-md-6">
+                @using (Html.BeginForm())
+                {
+                    <div class="input-group">
+                        @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Search for Student Information" })
+                        <div class="input-group-append">
+                            &nbsp;&nbsp; <button type="submit" class="btn btn-outline-info">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>@Html.ActionLink("Student Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })</th>
+                        <th>@Html.ActionLink("Father Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })</th>
+                        <th>@Html.ActionLink("Mother Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })</th>
+                        <th>@Html.ActionLink("Age", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })</th>
+                        <th>@Html.ActionLink("Home Address", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })</th>
+                        <th>@Html.ActionLink("Registration Date", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.StudentName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FatherName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.MotherName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Age)</td>
+                            <td>@Html.DisplayFor(modelItem => item.HomeAddress)</td>
+                            <td>@Html.DisplayFor(modelItem => item.RegistrationDate)</td>
+                            <td>
+                                @if (item.IsDeleted)
+                                {
+                                    <span class="badge badge-danger">Deleted</span>
+                                }
+                                else
+                                {
+                                    <div class="btn-group" role="group" aria-label="Actions">
+                                        @Html.ActionLink("Update", "Edit", new { id = item.StudentId }, new { @class = "btn btn-sm btn-primary" })&nbsp;&nbsp;
+                                        @Html.ActionLink("Details", "Details", new { id = item.StudentId }, new { @class = "btn btn-sm btn-info" })&nbsp;&nbsp;
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.StudentId }, new { @class = "btn btn-sm btn-danger" })
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br />
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+            @Html.PagedListPager(Model, page => Url.Action("Index",
+                new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+        </div>
+    </div>
+
